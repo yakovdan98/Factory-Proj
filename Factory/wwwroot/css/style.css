@@ -1,0 +1,75 @@
+.machines {
+  display: block;
+  border: none;
+  border-radius: 1rem;
+  box-sizing: border-box;
+  width: 47%;
+  float: left;
+  text-align: justify;
+  background-color: #fff;
+  padding: 2rem;
+  margin: .51rem;
+}
+
+.engineers {
+  display: block;
+  border: none;
+  border-radius: 1rem;
+  box-sizing: border-box;
+  width: 47%;
+  float: right;
+  text-align: justify;
+  background-color: #fff;
+  padding: 2rem;
+  padding-bottom: 3.4rem;
+  margin: .51rem;
+}
+
+body {
+	background:rgb(237, 237, 237);
+  height: 60vw;
+  font-family: 'Lato', sans-serif;
+}
+
+.nav-link {
+  margin: 5px;
+  border-radius: 1rem;
+  width: 90%;
+}
+
+.nav-link.active {
+  border-radius: .5rem;
+  width: 90%;
+  background: #0c709e!important;
+    /* fallback for old browsers */
+    /* background: -webkit-linear-gradient(to right, #798af7, #FBD786) !important; */
+    /* Chrome 10-25, Safari 5.1-6 */
+    /* background: linear-gradient(to right, #798af7, #FBD786) !important; */
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+a {
+  box-shadow: inset 0 0 0 0 #54b3d6;
+  color: #54b3d6;
+  margin: 0 -.25rem;
+  padding: 0 .25rem;
+  transition: color .5s ease-in-out, box-shadow .5s ease-in-out;
+}
+
+a:hover {
+  box-shadow: inset 300px 0 0 0 #54b3d6;
+  color: rgb(255, 255, 255);
+}
+
+input {
+  margin: 10px;
+}
+
+input#query {
+  width: 200px;
+  box-sizing: border-box;
+}
+
+.navbar fixed-bottom{
+  text-align: center;
+}
