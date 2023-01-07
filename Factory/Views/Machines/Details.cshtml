@@ -4,7 +4,6 @@
 
 @using Factory.Models
 @model Factory.Models.Machine
-<h3>@Html.DisplayFor(model => model.Name)</h3>
 <h3>@Html.DisplayFor(model => model.Description)</h3>
 <hr>
 
@@ -19,7 +18,7 @@ else
     @foreach (EngineerMachine join in Model.JoinEntities)
     {
       <li><strong>@join.Engineer.Name</strong></li>
-      @using (Html.BeginForm("DeleteJoin", "Machine"))
+      @using (Html.BeginForm("DeleteJoin", "Engineers"))
       {
         @Html.Hidden("joinId", @join.EngineerMachineId)
         <input type="submit" value="Delete" />
@@ -27,3 +26,5 @@ else
     }
   </ul>
 }
+
+<p>@Html.ActionLink("Add an Engineer", "AddEngineer", new { id = Model.MachineId })</p>
