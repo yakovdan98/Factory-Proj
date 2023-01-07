@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Registrar.Controllers
+namespace Factory.Controllers
 {
   public class EngineersController : Controller
   {
@@ -42,11 +42,54 @@ namespace Registrar.Controllers
     }
 
     [HttpPost]
-    public ActionResult Create(Engineer Engineer)
+    public ActionResult Create(Engineer engineer)
     {
-      _db.Engineers.Add(Engineer);
+
+      if (!ModelState.IsValid)
+      {
+        ViewBag.EngineerId = new SelectList(_db.Engineers, "EngineerId", "Name");
+        return View(engineer);
+      }
+      else
+      {
+        _db.Engineers.Add(engineer);
+        _db.SaveChanges();
+        return RedirectToAction("Index");
+      }
+    }
+    public ActionResult AddMachine(int id)
+    {
+      Engineer thisEngineer = _db.Engineers
+      .Include(engineer => engineer.JoinEntities)
+      .ThenInclude(join => join.Machine)
+      .FirstOrDefault(engineer => engineer.EngineerId == id);
+
+      ViewBag.MachineId = new SelectList(_db.Machines, "MachineId", "Name");
+      ViewBag.PageTitle = $"Add Machine to {thisEngineer.Name}";
+      return View(thisEngineer);
+    }
+
+    [HttpPost]
+    public ActionResult AddMachine(Engineer engineer, int machineId)
+    {
+#nullable enable
+      EngineerMachine? joinEntity = _db.EngineerMachine.FirstOrDefault(join => (join.MachineId == machineId && join.EngineerId == engineer.EngineerId));
+#nullable disable
+      if (joinEntity == null && machineId != 0)
+      {
+        _db.EngineerMachine.Add(new EngineerMachine() { MachineId = machineId, EngineerId = engineer.EngineerId });
+        _db.SaveChanges();
+      }
+      return RedirectToAction("Details", new { id = engineer.EngineerId });
+    }
+
+    [HttpPost]
+    public ActionResult DeleteJoin(int joinId)
+    {
+      EngineerMachine joinEntry = _db.EngineerMachine.FirstOrDefault(entry => entry.EngineerMachineId == joinId);
+      _db.EngineerMachine.Remove(joinEntry);
       _db.SaveChanges();
-      return RedirectToAction("Index");
+      return RedirectToAction("Details", new { id = joinEntry.EngineerId });
     }
   }
 }

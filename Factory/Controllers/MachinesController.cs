@@ -20,7 +20,7 @@ namespace Factory.Controllers
     {
       ViewBag.PageTitle = "View All Machines";
       List<Machine> MachineList = _db.Machines.Include(machine => machine.JoinEntities)
-          .ThenInclude(join => join.Machine).OrderByDescending(machine => machine.JoinEntities.Count).ToList();
+          .ThenInclude(join => join.Engineer).OrderByDescending(machine => machine.JoinEntities.Count).ToList();
 
       return View(MachineList);
     }
@@ -29,7 +29,7 @@ namespace Factory.Controllers
     {
       Machine thisMachine = _db.Machines
           .Include(machine => machine.JoinEntities)
-          .ThenInclude(join => join.Machine)
+          .ThenInclude(join => join.Engineer)
           .FirstOrDefault(machine => machine.MachineId == id);
       ViewBag.PageTitle = $"{thisMachine.Name} Details";
       return View(thisMachine);
@@ -42,11 +42,53 @@ namespace Factory.Controllers
     }
 
     [HttpPost]
-    public ActionResult Create(Machine Machine)
+    public ActionResult Create(Machine machine)
     {
-      _db.Machines.Add(Machine);
-      _db.SaveChanges();
-      return RedirectToAction("Index");
+      if (!ModelState.IsValid)
+      {
+        ViewBag.MachineId = new SelectList(_db.Machines, "MachineId", "Name");
+        return View(machine);
+      }
+      else
+      {
+        _db.Machines.Add(machine);
+        _db.SaveChanges();
+        return RedirectToAction("Index");
+      }
     }
+
+
+
+
+
+
+
+
+    public ActionResult AddEngineer(int id)
+    {
+      Machine thisMachine = _db.Machines
+      .Include(machine => machine.JoinEntities)
+      .ThenInclude(join => join.Engineer)
+      .FirstOrDefault(machine => machine.MachineId == id);
+
+      ViewBag.EngineerId = new SelectList(_db.Engineers, "EngineerId", "Name");
+      ViewBag.PageTitle = $"Add Engineer to {thisMachine.Name}";
+      return View(thisMachine);
+    }
+
+    [HttpPost]
+    public ActionResult AddEngineer(Machine machine, int engineerId)
+    {
+      #nullable enable
+      EngineerMachine? joinEntity = _db.EngineerMachine.FirstOrDefault(join => (join.EngineerId == engineerId && join.MachineId == machine.MachineId));
+      #nullable disable
+      if (joinEntity == null && engineerId != 0)
+      {
+        _db.EngineerMachine.Add(new EngineerMachine() { EngineerId = engineerId, MachineId = machine.MachineId });
+        _db.SaveChanges();
+      }
+      return RedirectToAction("Details", new { id = machine.MachineId });
+    }
+
   }
 }
