@@ -10,7 +10,7 @@
 <ul>
   @foreach (EngineerMachine join in Model.JoinEntities)
   {
-      <li><strong>@join.Engineer.Name</strong></li>
+    <li><strong>@join.Engineer.Name</strong></li>
     @using (Html.BeginForm("DeleteJoin", "Engineers"))
     {
       @Html.Hidden("joinId", @join.EngineerMachineId)
@@ -19,14 +19,21 @@
   }
 </ul>
 
-@using (Html.BeginForm())
+@if (ViewBag.Count != 0)
 {
-  @Html.HiddenFor(model => model.MachineId)
+  @using (Html.BeginForm())
+  {
+    @Html.HiddenFor(model => model.MachineId)
 
-  @Html.Label("Select engineer")
-  @Html.DropDownList("EngineerId")
+    @Html.Label("Select engineer")
+    @Html.DropDownList("EngineerId")
 
-  <input type="submit" value="Save" />
+    <input type="submit" value="Save" />
+  }
+}
+else
+{
+<p>Add an engineer first!</p>
 }
 <br>
 <p>@Html.ActionLink("Back to list", "Index")</p>

@@ -71,6 +71,7 @@ namespace Factory.Controllers
       .ThenInclude(join => join.Engineer)
       .FirstOrDefault(machine => machine.MachineId == id);
 
+      ViewBag.Count = _db.Engineers.Count();
       ViewBag.EngineerId = new SelectList(_db.Engineers, "EngineerId", "Name");
       ViewBag.PageTitle = $"Add Engineer to {thisMachine.Name}";
       return View(thisMachine);
@@ -79,9 +80,9 @@ namespace Factory.Controllers
     [HttpPost]
     public ActionResult AddEngineer(Machine machine, int engineerId)
     {
-      #nullable enable
+#nullable enable
       EngineerMachine? joinEntity = _db.EngineerMachine.FirstOrDefault(join => (join.EngineerId == engineerId && join.MachineId == machine.MachineId));
-      #nullable disable
+#nullable disable
       if (joinEntity == null && engineerId != 0)
       {
         _db.EngineerMachine.Add(new EngineerMachine() { EngineerId = engineerId, MachineId = machine.MachineId });
